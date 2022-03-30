@@ -90,7 +90,7 @@ day = today.getDay()
 month = today.getMonth() + 1
 year = today.getFullYear()
 document.querySelector('.time').value = time
-document.querySelector('.daylost').value = today.getDay()
+
 document.querySelector('.datelost').value = today.getDate()
 document.querySelector('.yearlost').value = year+543
 document.querySelector('.monthlost').value = month
@@ -146,6 +146,7 @@ day = 'วัน อาทิตย์'
     day = 'วัน เสาร์'
 }
 document.querySelector('.day').value = day
+document.querySelector('.daylost').value = day
 getDay = document.getElementById('day').value
 function sunday() {
   //รุ่ง
