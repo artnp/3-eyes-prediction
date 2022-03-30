@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Srisakdi&display=swap');
+        body{
+            font-family: 'Srisakdi', cursive;
+            font-size:x-large
+        }
+        </style>
+    
+    <title>ยามสามตา</title>
+</head>
+<body>
+    <center>
+    <h1>ยามสามตา</h1>
+         <font size="5">--------- ระบบคำนวณเลือกให้อัตโนมัติแล้ว --------- </font><br>
+    วันนี้ เพลา: <input type="text" id="time" class="time" style="font-size:30px;width:100px;height:40px;" disabled> โมง
+    <select id="day" class="day" style="font-size:30px;width:160px;height:40px" disabled>
+        <option value="วัน อาทิตย์">วัน อาทิตย์</option>
+        <option value="วัน จันทร์">วัน จันทร์</option>
+        <option value="วัน อังคาร">วัน อังคาร</option>
+        <option value="วัน พุฒ">วัน พุฒ</option>
+        <option value="วัน พฤหัศบดิ์">วัน พฤหัศบดิ์</option>
+        <option value="วัน สุกร์">วัน สุกร์</option>
+        <option value="วัน เสาร์">วัน เสาร์</option>
+      </select> 
+      <select id="lunar" class="lunar" style="font-size:30px;width:130px;height:40px" disabled>
+        <option value="ข้างขึ้น">ข้างขึ้น</option>
+        <option value="ข้างแรม">ข้างแรม</option>
+      </select> 
+      <br>
+      คำถาม: <select id="question" style="font-size:30px;width:350px;height:40px">
+        <option value="0">ของ หาย จะ ได้ หรือ มิ ได้</option>
+        <option value="1">คน ที่ เอา ไป นั้น เปน คน ชนิด ใด</option>
+        <option value="2">รูปพรรณ คนลัก ของ</option>
+        <option value="3">สัตว์ ๔ เท้า ๒ เท้า หาย จะ ได้ หรือ มิ ได้</option>
+        <option value="4">ของ หาย อยู่ ทิศ ใด</option>
+        <option value="5">จะ คลอด ลูก ง่าย ฤา ยาก</option>
+        <option value="6">เมื่อ ไหร่ ลูก จะ คลอด</option>
+        <option value="7">จะ คลอด ลูก นั้น เปน ชาย ฤา หญิง</option>
+        <option value="8">ของหาย มีดพร้า จอบ เสียม เปน ต้น ก็ดี</option>
+        <option value="9">มี ที่ ไป จะ มา เมื่อ ใด</option>
+        <option value="10">ไข้ เจ็บ อาการ จะ เปน ประ การ ใด</option>
+        <option value="11">คลอด ลูก เมื่อ ไร ออก จะ ออก</option>
+      </select>
+      หายเพลาประมาณ: <input type="text" id="timelost"  style="font-size:30px;width:100px;height:40px;"> โมง
+    <select id="daylost" class="daylost" style="font-size:30px;width:160px;height:40px">
+        <option value="วัน อาทิตย์">วัน อาทิตย์</option>
+        <option value="วัน จันทร์">วัน จันทร์</option>
+        <option value="วัน อังคาร">วัน อังคาร</option>
+        <option value="วัน พุฒ">วัน พุฒ</option>
+        <option value="วัน พฤหัศบดิ์">วัน พฤหัศบดิ์</option>
+        <option value="วัน สุกร์">วัน สุกร์</option>
+        <option value="วัน เสาร์">วัน เสาร์</option>
+      </select> วันที่ <input type="number" id="datelost" class="datelost" style="font-size:30px;width:60px;height:40px;"  >
+      เดือน <input type="number" id="monthlost" class="monthlost"  style="font-size:30px;width:60px;height:40px;" >
+      พ.ศ. <input type="number" id="yearlost" class="yearlost" style="font-size:30px;width:82px;height:40px;"  >
+      => <button class="cal" onsubmit="cal()" style="font-size:24px">ทำนาย</button>
+      <br><table><tr>
+      <hr>
+      <table><tbody><tr><td></td><td></td><td></td><td></td><td></td></tr><tr>
+        <td><div id='eyeone'><h2>๑</h2></div></td><td>•</td><td><h2><div id='eyetwo'>๒</h2></div><br><br></td><td>•</td><td><div id='eyethree'><h2>๓</h2></div></td></tr></tbody></table>
+        <table>
+            <tbody>
+            <tr>
+            <td>วันหาย</td>
+            <td><b><div id="lostEye"></div></b></td>
+            <td>-</td>
+            <td><b><div id="lunarlost"></div></b></td>
+            <td>• ตอนนี้:</td>
+            <td><b><div id="todayEye"></div></b></td>
+            <td>-</td>
+            <td><b><div id="lunarNow" class="lunarNow"></div></b></td>
+            <td><div id="resulte"></div></td>
+            </tr>
+  
+            </tbody>
+            </table>
+     
+      </div><br>
+      <b>คำทำนาย</b>
+      <u><div id="text1"></div></u>
+    </center>
+    <script>
+today = new Date();
+time = today.getHours()+'.'+ today.getMinutes()
+day = today.getDay()
+month = today.getMonth() + 1
+year = today.getFullYear()
+document.querySelector('.time').value = time
+document.querySelector('.datelost').value = today.getDate()
+document.querySelector('.yearlost').value = year+543
+document.querySelector('.monthlost').value = month
+
+
+getTime = document.getElementById('time').value
+getLunar = document.querySelector('.lunar').value
+function getMoonPhase(lyear, lmonth, lday)
+{
+    c = e = jd = b = 0;
+    if (lmonth < 3) {
+        lyear--
+        lmonth += 12;
+    }
+    ++lmonth;
+    c = 365.25 * lyear
+    e = 30.6 * lmonth
+    jd = c + e + lday - 694039.09
+    jd /= 29.5305882
+    b = parseInt(jd)
+    jd -= b
+    b = Math.round(jd * 8)
+    if (b >= 8 ) {
+        b = 0;
+    }
+    return b;
+}
+lunarDate = getMoonPhase(year, month, day)
+if (lunarDate == 0 || lunarDate == 1 || lunarDate == 2 || lunarDate == 3){
+    document.querySelector('.lunar').value = 'ข้างขึ้น'
+    document.getElementById('lunarNow').innerHTML = 'ข้างขึ้น'
+    MoonPredict = [1, 2, 3]
+} else {
+    document.querySelector('.lunar').value = 'ข้างแรม'
+    document.getElementById('lunarNow').innerHTML = 'ข้างขึ้น'
+    MoonPredict = [2, 3, 1]
+}
+
+
+if (day === 0){
+day = 'วัน อาทิตย์'
+} else if (day === 1){
+    day = 'วัน จันทร์'
+} else if (day === 2){
+    day = 'วัน อังคาร'
+} else if (day === 3){
+    day = 'วัน พุฒ'
+} else if (day === 4){
+    day = 'วัน พฤหัศบดิ์'
+} else if (day === 5){
+    day = 'วัน สุกร์'
+} else if (day === 5){
+    day = 'วัน เสาร์'
+}
+document.querySelector('.day').value = day
+getDay = document.getElementById('day').value
+function sunday() {
+  //รุ่ง
+  if (getTime >= 6.00 && getTime <= 7.30){
+  threeEyes = 'สุริยะ[อา]'
+  } else if (getTime >= 7.30 && getTime <= 9.00){
+  threeEyes = 'สุกระ[อา]'
+  } else if (getTime >= 9.00 && getTime <= 10.30){
+  threeEyes = 'พุฒ[อา]'
+  } else if (getTime >= 10.30 && getTime <= 12.00){
+  threeEyes = 'จันเทา[อา]'
+  } else if (getTime >= 12.00 && getTime <= 13.30){
+  threeEyes = 'เสารี[อา]'
+  } else if (getTime >= 13.30 && getTime <= 15.00){
+  threeEyes = 'ครู[อา]'
+  } else if (getTime >= 15.00 && getTime <= 16.30){
+  threeEyes = 'ภุมมะ[อา]'
+  } else if (getTime >= 16.30 && getTime <= 18.00){
+  threeEyes = 'สุริยะ.[อา]'
+  }   //ค่ำ
+  else if (getTime >= 18.00 && getTime <= 19.30){
+  threeEyes = 'ระวิ[อา]'
+  } else if (getTime >= 19.30 && getTime <= 21.00){
+  threeEyes = 'ชีโว[อา]'
+  } else if (getTime >= 21.00 && getTime <= 22.30){
+  threeEyes = 'สะสิ[อา]'
+  } else if (getTime >= 22.30 && getTime <= 23.59){
+  threeEyes = 'สุกโกร[อา]'
+  } else if (getTime >= 0.00 && getTime <= 1.30){
+  threeEyes = 'ภุมโม[อา]'
+  } else if (getTime >= 1.30 && getTime <= 3.00){
+  threeEyes = 'เสาโร[อา]'
+  } else if (getTime >= 3.00 && getTime <= 4.30){
+  threeEyes = 'พุฒโฒ[อา]'
+  } else if (getTime >= 4.30 && getTime <= 6.00){
+  threeEyes = 'ระวิ.[อา]'
+  }}
+
+  function monday() {
+  //รุ่ง
+  if (getTime >= 6.00 && getTime <= 7.30){
+  threeEyes = 'จันเทา[จ]'
+  } else if (getTime >= 7.30 && getTime <= 9.00){
+  threeEyes = 'เสารี[จ]'
+  } else if (getTime >= 9.00 && getTime <= 10.30){
+  threeEyes = 'ครู[จ]'
+  } else if (getTime >= 10.30 && getTime <= 12.00){
+  threeEyes = 'ภุมมะ[จ]'
+  } else if (getTime >= 12.00 && getTime <= 13.30){
+  threeEyes = 'สุริยะ[จ]'
+  } else if (getTime >= 13.30 && getTime <= 15.00){
+  threeEyes = 'สุกระ[จ]'
+  } else if (getTime >= 15.00 && getTime <= 16.30){
+  threeEyes = 'พุฒ[จ]'
+  } else if (getTime >= 16.30 && getTime <= 18.00){
+  threeEyes = 'จันเทา[จ].'
+  } //ค่ำ
+  else if (getTime >= 18.00 && getTime <= 19.30){
+  threeEyes = 'สะสิ[จ]'
+  } else if (getTime >= 19.30 && getTime <= 21.00){
+  threeEyes = 'สุกโกร[จ]'
+  } else if (getTime >= 21.00 && getTime <= 22.30){
+  threeEyes = 'ภุมโม[จ]'
+  } else if (getTime >= 22.30 && getTime <= 23.59){
+  threeEyes = 'เสาโร[จ]'
+  } else if (getTime >= 0.00 && getTime <= 1.30){
+  threeEyes = 'พุฒโฒ[จ]'
+  } else if (getTime >= 1.30 && getTime <= 3.00){
+  threeEyes = 'ระวิ[จ]'
+  } else if (getTime >= 3.00 && getTime <= 4.30){
+  threeEyes = 'ชีโว[จ]'
+  } else if (getTime >= 4.30 && getTime <= 6.00){
+  threeEyes = 'สะสิ.[จ]'
+  }}
+
+  function tuesday() {
+  //รุ่ง
+  if (getTime >= 6.00 && getTime <= 7.30){
+  threeEyes = 'ภุมมะ[อ]'
+  } else if (getTime >= 7.30 && getTime <= 9.00){
+  threeEyes = 'สุริยะ[อ]'
+  } else if (getTime >= 9.00 && getTime <= 10.30){
+  threeEyes = 'สุกระ[อ]'
+  } else if (getTime >= 10.30 && getTime <= 12.00){
+  threeEyes = 'พุฒ[อ]'
+  } else if (getTime >= 12.00 && getTime <= 13.30){
+  threeEyes = 'จันเทา[อ]'
+  } else if (getTime >= 13.30 && getTime <= 15.00){
+  threeEyes = 'เสารี[อ]'
+  } else if (getTime >= 15.00 && getTime <= 16.30){
+  threeEyes = 'ครู[อ]'
+  } else if (getTime >= 16.30 && getTime <= 18.00){
+  threeEyes = 'ภุมมะ.[อ]'
+  } //ค่ำ
+  else if (getTime >= 18.00 && getTime <= 19.30){
+  threeEyes = 'ภุมโม[อ]'
+  } else if (getTime >= 19.30 && getTime <= 21.00){
+  threeEyes = 'เสาโร[อ]'
+  } else if (getTime >= 21.00 && getTime <= 22.30){
+  threeEyes = 'พุฒโฒ[อ]'
+  } else if (getTime >= 22.30 && getTime <= 23.59){
+  threeEyes = 'ระวิ[อ]'
+  } else if (getTime >= 0.00 && getTime <= 1.30){
+  threeEyes = 'ชีโว[อ]'
+  } else if (getTime >= 1.30 && getTime <= 3.00){
+  threeEyes = 'สะสิ[อ]'
+  } else if (getTime >= 3.00 && getTime <= 4.30){
+  threeEyes = 'สุกโกร[อ]'
+  } else if (getTime >= 4.30 && getTime <= 6.00){
+  threeEyes = 'ภุมโม.[อ]'
+  }}
+
+  function wednesday() {
+  //รุ่ง
+  if (getTime >= 6.00 && getTime <= 7.30){
+  threeEyes = 'พุฒ[พ]'
+  } else if (getTime >= 7.30 && getTime <= 9.00){
+  threeEyes = 'จันเทา[พ]'
+  } else if (getTime >= 9.00 && getTime <= 10.30){
+  threeEyes = 'เสารี[พ]'
+  } else if (getTime >= 10.30 && getTime <= 12.00){
+  threeEyes = 'ครู[พ]'
+  } else if (getTime >= 12.00 && getTime <= 13.30){
+  threeEyes = 'ภุมมะ[พ]'
+  } else if (getTime >= 13.30 && getTime <= 15.00){
+  threeEyes = 'สุริยะ[พ]'
+  } else if (getTime >= 15.00 && getTime <= 16.30){
+  threeEyes = 'สุกระ[พ]'
+  } else if (getTime >= 16.30 && getTime <= 18.00){
+  threeEyes = 'พุฒ.[พ]'
+  } //ค่ำ
+  else if (getTime >= 18.00 && getTime <= 19.30){
+  threeEyes = 'พุฒโฒ[พ]'
+  } else if (getTime >= 19.30 && getTime <= 21.00){
+  threeEyes = 'ระวิ[พ]'
+  } else if (getTime >= 21.00 && getTime <= 22.30){
+  threeEyes = 'ชีโว[พ]'
+  } else if (getTime >= 22.30 && getTime <= 23.59){
+  threeEyes = 'สะสิ[พ]'
+  } else if (getTime >= 0.00 && getTime <= 1.30){
+  threeEyes = 'สุกโกร[พ]'
+  } else if (getTime >= 1.30 && getTime <= 3.00){
+  threeEyes = 'ภุมโม[พ]'
+  } else if (getTime >= 3.00 && getTime <= 4.30){
+  threeEyes = 'เสาโร[พ]'
+  } else if (getTime >= 4.30 && getTime <= 6.00){
+  threeEyes = 'พุฒโฒ.[พ]'
+  }}
+
+  function thursday() {
+  //รุ่ง
+  if (getTime >= 6.00 && getTime <= 7.30){
+  threeEyes = 'ครู[พฤ]'
+  } else if (getTime >= 7.30 && getTime <= 9.00){
+  threeEyes = 'ภุมมะ[พฤ]'
+  } else if (getTime >= 9.00 && getTime <= 10.30){
+  threeEyes = 'สุริยะ[พฤ]'
+  } else if (getTime >= 10.30 && getTime <= 12.00){
+  threeEyes = 'สุกระ[พฤ]'
+  } else if (getTime >= 12.00 && getTime <= 13.30){
+  threeEyes = 'พุฒ[พฤ]'
+  } else if (getTime >= 13.30 && getTime <= 15.00){
+  threeEyes = 'จันเทา[พฤ]'
+  } else if (getTime >= 15.00 && getTime <= 16.30){
+  threeEyes = 'เสารี[พฤ]'
+  } else if (getTime >= 16.30 && getTime <= 18.00){
+  threeEyes = 'ครู.[พฤ]'
+  } //ค่ำ
+  else if (getTime >= 18.00 && getTime <= 19.30){
+  threeEyes = 'ชีโว[พฤ]'
+  } else if (getTime >= 19.30 && getTime <= 21.00){
+  threeEyes = 'สะสิ[พฤ]'
+  } else if (getTime >= 21.00 && getTime <= 22.30){
+  threeEyes = 'สุกโกร[พฤ]'
+  } else if (getTime >= 22.30 && getTime <= 23.59){
+  threeEyes = 'ภุมโม[พฤ]'
+  } else if (getTime >= 0.00 && getTime <= 1.30){
+  threeEyes = 'เสาโร[พฤ]'
+  } else if (getTime >= 1.30 && getTime <= 3.00){
+  threeEyes = 'พุฒโฒ[พฤ]'
+  } else if (getTime >= 3.00 && getTime <= 4.30){
+  threeEyes = 'ระวิ[พฤ]'
+  } else if (getTime >= 4.30 && getTime <= 6.00){
+  threeEyes = 'ชีโว.[พฤ]'
+  }}
+
+  function friday() {
+  //รุ่ง
+  if (getTime >= 6.00 && getTime <= 7.30){
+  threeEyes = 'สุกระ[ศ]'
+  } else if (getTime >= 7.30 && getTime <= 9.00){
+  threeEyes = 'พุฒ[ศ]'
+  } else if (getTime >= 9.00 && getTime <= 10.30){
+  threeEyes = 'จันเทา[ศ]'
+  } else if (getTime >= 10.30 && getTime <= 12.00){
+  threeEyes = 'เสารี[ศ]'
+  } else if (getTime >= 12.00 && getTime <= 13.30){
+  threeEyes = 'ครู[ศ]'
+  } else if (getTime >= 13.30 && getTime <= 15.00){
+  threeEyes = 'ภุมมะ[ศ]'
+  } else if (getTime >= 15.00 && getTime <= 16.30){
+  threeEyes = 'สุริยะ[ศ]'
+  } else if (getTime >= 16.30 && getTime <= 18.00){
+  threeEyes = 'สุกระ.[ศ]'
+  } //ค่ำ
+  else if (getTime >= 18.00 && getTime <= 19.30){
+  threeEyes = 'สุกโกร[ศ]'
+  } else if (getTime >= 19.30 && getTime <= 21.00){
+  threeEyes = 'ภุมโม[ศ]'
+  } else if (getTime >= 21.00 && getTime <= 22.30){
+  threeEyes = 'เสาโร[ศ]'
+  } else if (getTime >= 22.30 && getTime <= 23.59){
+  threeEyes = 'พุฒโฒ[ศ]'
+  } else if (getTime >= 0.00 && getTime <= 1.30){
+  threeEyes = 'ระวิ[ศ]'
+  } else if (getTime >= 1.30 && getTime <= 3.00){
+  threeEyes = 'ชีโว[ศ]'
+  } else if (getTime >= 3.00 && getTime <= 4.30){
+  threeEyes = 'สะสิ[ศ]'
+  } else if (getTime >= 4.30 && getTime <= 6.00){
+  threeEyes = 'สุกโกร.[ศ]'
+  }}
+
+  function saturday() {
+  //รุ่ง
+  if (getTime >= 6.00 && getTime <= 7.30){
+  threeEyes = 'เสารี[ส]'
+  } else if (getTime >= 7.30 && getTime <= 9.00){
+  threeEyes = 'ครู[ส]'
+  } else if (getTime >= 9.00 && getTime <= 10.30){
+  threeEyes = 'ภุมมะ[ส]'
+  } else if (getTime >= 10.30 && getTime <= 12.00){
+  threeEyes = 'สุริยะ[ส]'
+  } else if (getTime >= 12.00 && getTime <= 13.30){
+  threeEyes = 'สุกระ[ส]'
+  } else if (getTime >= 13.30 && getTime <= 15.00){
+  threeEyes = 'พุฒ[ส]'
+  } else if (getTime >= 15.00 && getTime <= 16.30){
+  threeEyes = 'จันเทา[ส]'
+  } else if (getTime >= 16.30 && getTime <= 18.00){
+  threeEyes = 'เสารี.[ส]'
+  } //ค่ำ
+  else if (getTime >= 18.00 && getTime <= 19.30){
+  threeEyes = 'เสาโร[ส]'
+  } else if (getTime >= 19.30 && getTime <= 21.00){
+  threeEyes = 'พุฒโฒ[ส]'
+  } else if (getTime >= 21.00 && getTime <= 22.30){
+  threeEyes = 'ระวิ[ส]'
+  } else if (getTime >= 22.30 && getTime <= 23.59){
+  threeEyes = 'ชีโว[ส]'
+  } else if (getTime >= 0.00 && getTime <= 1.30){
+  threeEyes = 'สะสิ[ส]'
+  } else if (getTime >= 1.30 && getTime <= 3.00){
+  threeEyes = 'สุกโกร[ส]'
+  } else if (getTime >= 3.00 && getTime <= 4.30){
+  threeEyes = 'ภุมโม[ส]'
+  } else if (getTime >= 4.30 && getTime <= 6.00){
+  threeEyes = 'เสาโร.[ส]'
+  }}
+
+  if (getDay === 'วัน อาทิตย์'){
+    sunday()
+    document.getElementById('todayEye').innerHTML=threeEyes
+} else if (getDay === 'วัน จันทร์'){
+    monday()
+    document.getElementById('todayEye').innerHTML=threeEyes
+} else if (getDay === 'วัน อังคาร'){
+    tuesday()
+    document.getElementById('todayEye').innerHTML=threeEyes
+} else if (getDay === 'วัน พุฒ'){
+    wednesday()
+    document.getElementById('todayEye').innerHTML=threeEyes
+} else if (getDay === 'วัน พฤหัศบดิ์'){
+    thursday()
+    document.getElementById('todayEye').innerHTML= threeEyes
+} else if (getDay === 'วัน สุกร์'){
+    friday()
+    document.getElementById('todayEye').innerHTML=threeEyes
+} else if (getDay === 'วัน เสาร์'){
+    saturday()
+    document.getElementById('todayEye').innerHTML=threeEyes
+}
+
+function cal() {
+    getTimelost = document.getElementById('timelost').value
+    getDaylost = document.getElementById('daylost').value
+    getDatelost = document.getElementById('datelost').value
+    getMonthlost = document.getElementById('monthlost').value
+    getYearlost = document.getElementById('yearlost').value - 543
+    getQuestion = document.getElementById('question').value
+    function getMoonPhase2(lyear1, lmonth1, lday1)
+{
+    c1 = e1 = jd1 = b1 = 0;
+    if (lmonth1 < 3) {
+        lyear1--
+        lmonth1 += 12;
+    }
+    ++lmonth1;
+    c1 = 365.25 * lyear1
+    e1 = 30.6 * lmonth1
+    jd1 = c1 + e1 + lday1 - 694039.09
+    jd1 /= 29.5305882
+    b1 = parseInt(jd)
+    jd1 -= b
+    b1 = Math.round(jd * 8)
+    if (b1 >= 8 ) {
+        b1 = 0;
+    }
+    return b1;
+}
+lunarDate2 = getMoonPhase2(getYearlost, getMonthlost, getDatelost)
+if (lunarDate2 == 0 || lunarDate2 == 1 || lunarDate2 == 2 || lunarDate2 == 3){
+    document.getElementById('lunarlost').innerHTML = 'ข้างขึ้น'
+} else {
+    document.getElementById('lunarlost').innerHTML = 'ข้างแรม'
+}
+function sundaylost() {
+  //รุ่ง
+  if (getTimelost >= 6.00 && getTimelost <= 7.30){
+  threeEyesLost = 'สุริยะ[อา]'
+  } else if (getTimelost >= 7.30 && getTimelost <= 9.00){
+  threeEyesLost = 'สุกระ[อา]'
+  } else if (getTimelost >= 9.00 && getTimelost <= 10.30){
+  threeEyesLost = 'พุฒ[อา]'
+  } else if (getTimelost >= 10.30 && getTimelost <= 12.00){
+  threeEyesLost = 'จันเทา[อา]'
+  } else if (getTimelost >= 12.00 && getTimelost <= 13.30){
+  threeEyesLost = 'เสารี[อา]'
+  } else if (getTimelost >= 13.30 && getTimelost <= 15.00){
+  threeEyesLost = 'ครู[อา]'
+  } else if (getTimelost >= 15.00 && getTimelost <= 16.30){
+  threeEyesLost = 'ภุมมะ[อา]'
+  } else if (getTimelost >= 16.30 && getTimelost <= 18.00){
+  threeEyesLost = 'สุริยะ.[อา]'
+  }   //ค่ำ
+  else if (getTimelost >= 18.00 && getTimelost <= 19.30){
+  threeEyesLost = 'ระวิ[อา]'
+  } else if (getTimelost >= 19.30 && getTimelost <= 21.00){
+  threeEyesLost = 'ชีโว[อา]'
+  } else if (getTimelost >= 21.00 && getTimelost <= 22.30){
+  threeEyesLost = 'สะสิ[อา]'
+  } else if (getTimelost >= 22.30 && getTimelost <= 23.59){
+  threeEyesLost = 'สุกโกร[อา]'
+  } else if (getTimelost >= 0.00 && getTimelost <= 1.30){
+  threeEyesLost = 'ภุมโม[อา]'
+  } else if (getTimelost >= 1.30 && getTimelost <= 3.00){
+  threeEyesLost = 'เสาโร[อา]'
+  } else if (getTimelost >= 3.00 && getTimelost <= 4.30){
+  threeEyesLost = 'พุฒโฒ[อา]'
+  } else if (getTimelost >= 4.30 && getTimelost <= 6.00){
+  threeEyesLost = 'ระวิ.[อา]'
+  }}
+
+  function mondaylost() {
+  //รุ่ง
+  if (getTimelost >= 6.00 && getTimelost <= 7.30){
+  threeEyesLost = 'จันเทา[จ]'
+  } else if (getTimelost >= 7.30 && getTimelost <= 9.00){
+  threeEyesLost = 'เสารี[จ]'
+  } else if (getTimelost >= 9.00 && getTimelost <= 10.30){
+  threeEyesLost = 'ครู[จ]'
+  } else if (getTimelost >= 10.30 && getTimelost <= 12.00){
+  threeEyesLost = 'ภุมมะ[จ]'
+  } else if (getTimelost >= 12.00 && getTimelost <= 13.30){
+  threeEyesLost = 'สุริยะ[จ]'
+  } else if (getTimelost >= 13.30 && getTimelost <= 15.00){
+  threeEyesLost = 'สุกระ[จ]'
+  } else if (getTimelost >= 15.00 && getTimelost <= 16.30){
+  threeEyesLost = 'พุฒ[จ]'
+  } else if (getTimelost >= 16.30 && getTimelost <= 18.00){
+  threeEyesLost = 'จันเทา.[จ]'
+  } //ค่ำ
+  else if (getTimelost >= 18.00 && getTimelost <= 19.30){
+  threeEyesLost = 'สะสิ[จ]'
+  } else if (getTimelost >= 19.30 && getTimelost <= 21.00){
+  threeEyesLost = 'สุกโกร[จ]'
+  } else if (getTimelost >= 21.00 && getTimelost <= 22.30){
+  threeEyesLost = 'ภุมโม[จ]'
+  } else if (getTimelost >= 22.30 && getTimelost <= 23.59){
+  threeEyesLost = 'เสาโร[จ]'
+  } else if (getTimelost >= 0.00 && getTimelost <= 1.30){
+  threeEyesLost = 'พุฒโฒ[จ]'
+  } else if (getTimelost >= 1.30 && getTimelost <= 3.00){
+  threeEyesLost = 'ระวิ[จ]'
+  } else if (getTimelost >= 3.00 && getTimelost <= 4.30){
+  threeEyesLost = 'ชีโว[จ]'
+  } else if (getTimelost >= 4.30 && getTimelost <= 6.00){
+  threeEyesLost = 'สะสิ.[จ]'
+  }}
+
+  function tuesdaylost() {
+  //รุ่ง
+  if (getTimelost >= 6.00 && getTimelost <= 7.30){
+  threeEyesLost = 'ภุมมะ[อ]'
+  } else if (getTimelost >= 7.30 && getTimelost <= 9.00){
+  threeEyesLost = 'สุริยะ[อ]'
+  } else if (getTimelost >= 9.00 && getTimelost <= 10.30){
+  threeEyesLost = 'สุกระ[อ]'
+  } else if (getTimelost >= 10.30 && getTimelost <= 12.00){
+  threeEyesLost = 'พุฒ[อ]'
+  } else if (getTimelost >= 12.00 && getTimelost <= 13.30){
+  threeEyesLost = 'จันเทา[อ]'
+  } else if (getTimelost >= 13.30 && getTimelost <= 15.00){
+  threeEyesLost = 'เสารี[อ]'
+  } else if (getTimelost >= 15.00 && getTimelost <= 16.30){
+  threeEyesLost = 'ครู[อ]'
+  } else if (getTimelost >= 16.30 && getTimelost <= 18.00){
+  threeEyesLost = 'ภุมมะ.[อ]'
+  } //ค่ำ
+  else if (getTimelost >= 18.00 && getTimelost <= 19.30){
+  threeEyesLost = 'ภุมโม[อ]'
+  } else if (getTimelost >= 19.30 && getTimelost <= 21.00){
+  threeEyesLost = 'เสาโร[อ]'
+  } else if (getTimelost >= 21.00 && getTimelost <= 22.30){
+  threeEyesLost = 'พุฒโฒ[อ]'
+  } else if (getTimelost >= 22.30 && getTimelost <= 23.59){
+  threeEyesLost = 'ระวิ[อ]'
+  } else if (getTimelost >= 0.00 && getTimelost <= 1.30){
+  threeEyesLost = 'ชีโว[อ]'
+  } else if (getTimelost >= 1.30 && getTimelost <= 3.00){
+  threeEyesLost = 'สะสิ[อ]'
+  } else if (getTimelost >= 3.00 && getTimelost <= 4.30){
+  threeEyesLost = 'สุกโกร[อ]'
+  } else if (getTimelost >= 4.30 && getTimelost <= 6.00){
+  threeEyesLost = 'ภุมโม.[อ]'
+  }}
+
+  function wednesdaylost() {
+  //รุ่ง
+  if (getTimelost >= 6.00 && getTimelost <= 7.30){
+  threeEyesLost = 'พุฒ[พ]'
+  } else if (getTimelost >= 7.30 && getTimelost <= 9.00){
+  threeEyesLost = 'จันเทา[พ]'
+  } else if (getTimelost >= 9.00 && getTimelost <= 10.30){
+  threeEyesLost = 'เสารี[พ]'
+  } else if (getTimelost >= 10.30 && getTimelost <= 12.00){
+  threeEyesLost = 'ครู[พ]'
+  } else if (getTimelost >= 12.00 && getTimelost <= 13.30){
+  threeEyesLost = 'ภุมมะ[พ]'
+  } else if (getTimelost >= 13.30 && getTimelost <= 15.00){
+  threeEyesLost = 'สุริยะ[พ]'
+  } else if (getTimelost >= 15.00 && getTimelost <= 16.30){
+  threeEyesLost = 'สุกระ[พ]'
+  } else if (getTimelost >= 16.30 && getTimelost <= 18.00){
+  threeEyesLost = 'พุฒ.[พ]'
+  } //ค่ำ
+  else if (getTimelost >= 18.00 && getTimelost <= 19.30){
+  threeEyesLost = 'พุฒโฒ[พ]'
+  } else if (getTimelost >= 19.30 && getTimelost <= 21.00){
+  threeEyesLost = 'ระวิ[พ]'
+  } else if (getTimelost >= 21.00 && getTimelost <= 22.30){
+  threeEyesLost = 'ชีโว[พ]'
+  } else if (getTimelost >= 22.30 && getTimelost <= 23.59){
+  threeEyesLost = 'สะสิ[พ]'
+  } else if (getTimelost >= 0.00 && getTimelost <= 1.30){
+  threeEyesLost = 'สุกโกร[พ]'
+  } else if (getTimelost >= 1.30 && getTimelost <= 3.00){
+  threeEyesLost = 'ภุมโม[พ]'
+  } else if (getTimelost >= 3.00 && getTimelost <= 4.30){
+  threeEyesLost = 'เสาโร[พ]'
+  } else if (getTimelost >= 4.30 && getTimelost <= 6.00){
+  threeEyesLost = 'พุฒโฒ.[พ]'
+  }}
+
+  function thursdaylost() {
+  //รุ่ง
+  if (getTimelost >= 6.00 && getTimelost <= 7.30){
+  threeEyesLost = 'ครู[พฤ]'
+  } else if (getTimelost >= 7.30 && getTimelost <= 9.00){
+  threeEyesLost = 'ภุมมะ[พฤ]'
+  } else if (getTimelost >= 9.00 && getTimelost <= 10.30){
+  threeEyesLost = 'สุริยะ[พฤ]'
+  } else if (getTimelost >= 10.30 && getTimelost <= 12.00){
+  threeEyesLost = 'สุกระ[พฤ]'
+  } else if (getTimelost >= 12.00 && getTimelost <= 13.30){
+  threeEyesLost = 'พุฒ[พฤ]'
+  } else if (getTimelost >= 13.30 && getTimelost <= 15.00){
+  threeEyesLost = 'จันเทา[พฤ]'
+  } else if (getTimelost >= 15.00 && getTimelost <= 16.30){
+  threeEyesLost = 'เสารี[พฤ]'
+  } else if (getTimelost >= 16.30 && getTimelost <= 18.00){
+  threeEyesLost = 'ครู.[พฤ]'
+  } //ค่ำ
+  else if (getTimelost >= 18.00 && getTimelost <= 19.30){
+  threeEyesLost = 'ชีโว[พฤ]'
+  } else if (getTimelost >= 19.30 && getTimelost <= 21.00){
+  threeEyesLost = 'สะสิ[พฤ]'
+  } else if (getTimelost >= 21.00 && getTimelost <= 22.30){
+  threeEyesLost = 'สุกโกร[พฤ]'
+  } else if (getTimelost >= 22.30 && getTimelost <= 23.59){
+  threeEyesLost = 'ภุมโม[พฤ]'
+  } else if (getTimelost >= 0.00 && getTimelost <= 1.30){
+  threeEyesLost = 'เสาโร[พฤ]'
+  } else if (getTimelost >= 1.30 && getTimelost <= 3.00){
+  threeEyesLost = 'พุฒโฒ[พฤ]'
+  } else if (getTimelost >= 3.00 && getTimelost <= 4.30){
+  threeEyesLost = 'ระวิ[พฤ]'
+  } else if (getTimelost >= 4.30 && getTimelost <= 6.00){
+  threeEyesLost = 'ชีโว.[พฤ]'
+  }}
+
+  function fridaylost() {
+  //รุ่ง
+  if (getTimelost >= 6.00 && getTimelost <= 7.30){
+  threeEyesLost = 'สุกระ[ศ]'
+  } else if (getTimelost >= 7.30 && getTimelost <= 9.00){
+  threeEyesLost = 'พุฒ[ศ]'
+  } else if (getTimelost >= 9.00 && getTimelost <= 10.30){
+  threeEyesLost = 'จันเทา[ศ]'
+  } else if (getTimelost >= 10.30 && getTimelost <= 12.00){
+  threeEyesLost = 'เสารี[ศ]'
+  } else if (getTimelost >= 12.00 && getTimelost <= 13.30){
+  threeEyesLost = 'ครู[ศ]'
+  } else if (getTimelost >= 13.30 && getTimelost <= 15.00){
+  threeEyesLost = 'ภุมมะ[ศ]'
+  } else if (getTimelost >= 15.00 && getTimelost <= 16.30){
+  threeEyesLost = 'สุริยะ[ศ]'
+  } else if (getTimelost >= 16.30 && getTimelost <= 18.00){
+  threeEyesLost = 'สุกระ.[ศ]'
+  } //ค่ำ
+  else if (getTimelost >= 18.00 && getTimelost <= 19.30){
+  threeEyesLost = 'สุกโกร[ศ]'
+  } else if (getTimelost >= 19.30 && getTimelost <= 21.00){
+  threeEyesLost = 'ภุมโม[ศ]'
+  } else if (getTimelost >= 21.00 && getTimelost <= 22.30){
+  threeEyesLost = 'เสาโร[ศ]'
+  } else if (getTimelost >= 22.30 && getTimelost <= 23.59){
+  threeEyesLost = 'พุฒโฒ[ศ]'
+  } else if (getTimelost >= 0.00 && getTimelost <= 1.30){
+  threeEyesLost = 'ระวิ[ศ]'
+  } else if (getTimelost >= 1.30 && getTimelost <= 3.00){
+  threeEyesLost = 'ชีโว[ศ]'
+  } else if (getTimelost >= 3.00 && getTimelost <= 4.30){
+  threeEyesLost = 'สะสิ[ศ]'
+  } else if (getTimelost >= 4.30 && getTimelost <= 6.00){
+  threeEyesLost = 'สุกโกร.[ศ]'
+  }}
+
+  function saturdaylost() {
+  //รุ่ง
+  if (getTimelost >= 6.00 && getTimelost <= 7.30){
+  threeEyesLost = 'เสารี[ส]'
+  } else if (getTimelost >= 7.30 && getTimelost <= 9.00){
+  threeEyesLost = 'ครู[ส]'
+  } else if (getTimelost >= 9.00 && getTimelost <= 10.30){
+  threeEyesLost = 'ภุมมะ[ส]'
+  } else if (getTimelost >= 10.30 && getTimelost <= 12.00){
+  threeEyesLost = 'สุริยะ[ส]'
+  } else if (getTimelost >= 12.00 && getTimelost <= 13.30){
+  threeEyesLost = 'สุกระ[ส]'
+  } else if (getTimelost >= 13.30 && getTimelost <= 15.00){
+  threeEyesLost = 'พุฒ[ส]'
+  } else if (getTimelost >= 15.00 && getTimelost <= 16.30){
+  threeEyesLost = 'จันเทา[ส]'
+  } else if (getTimelost >= 16.30 && getTimelost <= 18.00){
+  threeEyesLost = 'เสารี.[ส]'
+  } //ค่ำ
+  else if (getTimelost >= 18.00 && getTimelost <= 19.30){
+  threeEyesLost = 'เสาโร[ส]'
+  } else if (getTimelost >= 19.30 && getTimelost <= 21.00){
+  threeEyesLost = 'พุฒโฒ[ส]'
+  } else if (getTimelost >= 21.00 && getTimelost <= 22.30){
+  threeEyesLost = 'ระวิ[ส]'
+  } else if (getTimelost >= 22.30 && getTimelost <= 23.59){
+  threeEyesLost = 'ชีโว[ส]'
+  } else if (getTimelost >= 0.00 && getTimelost <= 1.30){
+  threeEyesLost = 'สะสิ[ส]'
+  } else if (getTimelost >= 1.30 && getTimelost <= 3.00){
+  threeEyesLost = 'สุกโกร[ส]'
+  } else if (getTimelost >= 3.00 && getTimelost <= 4.30){
+  threeEyesLost = 'ภุมโม[ส]'
+  } else if (getTimelost >= 4.30 && getTimelost <= 6.00){
+  threeEyesLost = 'เสาโร.[ส]'
+  }}
+
+
+  if (getDaylost === 'วัน อาทิตย์'){
+    sundaylost()
+    document.getElementById('lostEye').innerHTML= threeEyesLost
+    minus = ['สุริยะ[อา]', 'สุกระ[อา]', 'พุฒ[อา]', 'จันเทา[อา]', 'เสารี[อา]', 'ครู[อา]', 'ภุมมะ[อา]', 'สุริยะ.[อา]', 'ระวิ[อา]', 'ชีโว[อา]', 'สะสิ[อา]', 'สุกโกร[อา]', 'ภุมโม[อา]', 'เสาโร[อา]', 'พุฒโฒ[อา]', 'ระวิ.[อา]', 'จันเทา[จ]', 'เสารี[จ]', 'ครู[จ]', 'ภุมมะ[จ]', 'สุริยะ[จ]', 'สุกระ[จ]', 'พุฒ[จ]', 'จันเทา.[จ]', 'สะสิ[จ]', 'สุกโกร[จ]', 'ภุมโม[จ]', 'เสาโร[จ]', 'พุฒโฒ[จ]', 'ระวิ[จ]', 'ชีโว[จ]', 'สะสิ.[จ]', 'ภุมมะ[อ]', 'สุริยะ[อ]', 'สุกระ[อ]', 'พุฒ[อ]', 'จันเทา[อ]', 'เสารี[อ]', 'ครู[อ]', 'ภุมมะ.[อ]', 'ภุมโม[อ]', 'เสาโร[อ]', 'พุฒโฒ[อ]', 'ระวิ[อ]', 'ชีโว[อ]', 'สะสิ[อ]', 'สุกโกร[อ]', 'ภุมโม.[อ]', 'พุฒ[พ]', 'จันเทา[พ]', 'เสารี[พ]', 'ครู[พ]', 'ภุมมะ[พ]','ภุมมะ[พ]', 'สุริยะ[พ]', 'สุกระ[พ]', 'พุฒ.[พ]', 'พุฒโฒ[พ]', 'ระวิ[พ]', 'ชีโว[พ]', 'สะสิ[พ]', 'สุกโกร[พ]', 'ภุมโม[พ]', 'เสาโร[พ]', 'พุฒโฒ.[พ]', 'ครู[พฤ]', 'ภุมมะ[พฤ]', 'สุริยะ[พฤ]', 'สุกระ[พฤ]', 'พุฒ[พฤ]', 'จันเทา[พฤ]', 'เสารี[พฤ]', 'ครู.[พฤ]', 'ชีโว[พฤ]', 'สะสิ[พฤ]', 'สุกโกร[พฤ]', 'ภุมโม[พฤ]', 'เสาโร[พฤ]', 'พุฒโฒ[พฤ]', 'ระวิ[พฤ]', 'ชีโว.[พฤ]', 'สุกระ[ศ]', 'พุฒ[ศ]', 'จันเทา[ศ]', 'เสารี[ศ]', 'ครู[ศ]', 'ภุมมะ[ศ]', 'สุริยะ[ศ]', 'สุกระ.[ศ]', 'สุกโกร[ศ]', 'ภุมโม[ศ]', 'เสาโร[ศ]', 'พุฒโฒ[ศ]', 'ระวิ[ศ]', 'ชีโว[ศ]', 'สะสิ[ศ]', 'สุกโกร.[ศ]', 'เสารี[ส]', 'ครู[ส]', 'ภุมมะ[ส]', 'สุริยะ[ส]', 'สุกระ[ส]', 'พุฒ[ส]', 'จันเทา[ส]', 'เสารี.[ส]', 'เสาโร[ส]', 'พุฒโฒ[ส]', 'ระวิ[ส]', 'ชีโว[ส]', 'สะสิ[ส]', 'สุกโกร[ส]', 'ภุมโม[ส]', 'เสาโร.[ส]']
+    resultm = Math.abs(minus.indexOf(threeEyes) - minus.indexOf(threeEyesLost))
+    document.getElementById('resulte').innerHTML = ' • ผลลัพธ์: <font color=\'red\'><b>' + resultm + ' ตำแหน่ง</b></font>'
+    jumpUp = MoonPredict[Number(resultm % 3)-1]
+
+    
+} else if (getDaylost === 'วัน จันทร์'){
+    mondaylost()
+    document.getElementById('lostEye').innerHTML=threeEyesLost
+    minus = ['จันเทา[จ]', 'เสารี[จ]', 'ครู[จ]', 'ภุมมะ[จ]', 'สุริยะ[จ]', 'สุกระ[จ]', 'พุฒ[จ]', 'จันเทา.[จ]', 'สะสิ[จ]', 'สุกโกร[จ]', 'ภุมโม[จ]', 'เสาโร[จ]', 'พุฒโฒ[จ]', 'ระวิ[จ]', 'ชีโว[จ]', 'สะสิ.[จ]', 'ภุมมะ[อ]', 'สุริยะ[อ]', 'สุกระ[อ]', 'พุฒ[อ]', 'จันเทา[อ]', 'เสารี[อ]', 'ครู[อ]', 'ภุมมะ.[อ]', 'ภุมโม[อ]', 'เสาโร[อ]', 'พุฒโฒ[อ]', 'ระวิ[อ]', 'ชีโว[อ]', 'สะสิ[อ]', 'สุกโกร[อ]', 'ภุมโม.[อ]', 'พุฒ[พ]', 'จันเทา[พ]', 'เสารี[พ]', 'ครู[พ]', 'ภุมมะ[พ]','ภุมมะ[พ]', 'สุริยะ[พ]', 'สุกระ[พ]', 'พุฒ.[พ]', 'พุฒโฒ[พ]', 'ระวิ[พ]', 'ชีโว[พ]', 'สะสิ[พ]', 'สุกโกร[พ]', 'ภุมโม[พ]', 'เสาโร[พ]', 'พุฒโฒ.[พ]', 'ครู[พฤ]', 'ภุมมะ[พฤ]', 'สุริยะ[พฤ]', 'สุกระ[พฤ]', 'พุฒ[พฤ]', 'จันเทา[พฤ]', 'เสารี[พฤ]', 'ครู.[พฤ]', 'ชีโว[พฤ]', 'สะสิ[พฤ]', 'สุกโกร[พฤ]', 'ภุมโม[พฤ]', 'เสาโร[พฤ]', 'พุฒโฒ[พฤ]', 'ระวิ[พฤ]', 'ชีโว.[พฤ]', 'สุกระ[ศ]', 'พุฒ[ศ]', 'จันเทา[ศ]', 'เสารี[ศ]', 'ครู[ศ]', 'ภุมมะ[ศ]', 'สุริยะ[ศ]', 'สุกระ.[ศ]', 'สุกโกร[ศ]', 'ภุมโม[ศ]', 'เสาโร[ศ]', 'พุฒโฒ[ศ]', 'ระวิ[ศ]', 'ชีโว[ศ]', 'สะสิ[ศ]', 'สุกโกร.[ศ]', 'เสารี[ส]', 'ครู[ส]', 'ภุมมะ[ส]', 'สุริยะ[ส]', 'สุกระ[ส]', 'พุฒ[ส]', 'จันเทา[ส]', 'เสารี.[ส]', 'เสาโร[ส]', 'พุฒโฒ[ส]', 'ระวิ[ส]', 'ชีโว[ส]', 'สะสิ[ส]', 'สุกโกร[ส]', 'ภุมโม[ส]', 'เสาโร.[ส]', 'สุริยะ[อา]', 'สุกระ[อา]', 'พุฒ[อา]', 'จันเทา[อา]', 'เสารี[อา]', 'ครู[อา]', 'ภุมมะ[อา]', 'สุริยะ.[อา]', 'ระวิ[อา]', 'ชีโว[อา]', 'สะสิ[อา]', 'สุกโกร[อา]', 'ภุมโม[อา]', 'เสาโร[อา]', 'พุฒโฒ[อา]', 'ระวิ.[อา]']
+    resultm = Math.abs(minus.indexOf(threeEyes) - minus.indexOf(threeEyesLost))
+    document.getElementById('resulte').innerHTML = ' • ผลลัพธ์: <font color=\'red\'><b>' + resultm + ' ตำแหน่ง</b></font>'
+    jumpUp = MoonPredict[Number(resultm % 3)-1]
+
+} else if (getDaylost === 'วัน อังคาร'){
+    tuesdaylost()
+    document.getElementById('lostEye').innerHTML=threeEyesLost
+    minus = ['ภุมมะ[อ]', 'สุริยะ[อ]', 'สุกระ[อ]', 'พุฒ[อ]', 'จันเทา[อ]', 'เสารี[อ]', 'ครู[อ]', 'ภุมมะ.[อ]', 'ภุมโม[อ]', 'เสาโร[อ]', 'พุฒโฒ[อ]', 'ระวิ[อ]', 'ชีโว[อ]', 'สะสิ[อ]', 'สุกโกร[อ]', 'ภุมโม.[อ]', 'พุฒ[พ]', 'จันเทา[พ]', 'เสารี[พ]', 'ครู[พ]', 'ภุมมะ[พ]','ภุมมะ[พ]', 'สุริยะ[พ]', 'สุกระ[พ]', 'พุฒ.[พ]', 'พุฒโฒ[พ]', 'ระวิ[พ]', 'ชีโว[พ]', 'สะสิ[พ]', 'สุกโกร[พ]', 'ภุมโม[พ]', 'เสาโร[พ]', 'พุฒโฒ.[พ]', 'ครู[พฤ]', 'ภุมมะ[พฤ]', 'สุริยะ[พฤ]', 'สุกระ[พฤ]', 'พุฒ[พฤ]', 'จันเทา[พฤ]', 'เสารี[พฤ]', 'ครู.[พฤ]', 'ชีโว[พฤ]', 'สะสิ[พฤ]', 'สุกโกร[พฤ]', 'ภุมโม[พฤ]', 'เสาโร[พฤ]', 'พุฒโฒ[พฤ]', 'ระวิ[พฤ]', 'ชีโว.[พฤ]', 'สุกระ[ศ]', 'พุฒ[ศ]', 'จันเทา[ศ]', 'เสารี[ศ]', 'ครู[ศ]', 'ภุมมะ[ศ]', 'สุริยะ[ศ]', 'สุกระ.[ศ]', 'สุกโกร[ศ]', 'ภุมโม[ศ]', 'เสาโร[ศ]', 'พุฒโฒ[ศ]', 'ระวิ[ศ]', 'ชีโว[ศ]', 'สะสิ[ศ]', 'สุกโกร.[ศ]', 'เสารี[ส]', 'ครู[ส]', 'ภุมมะ[ส]', 'สุริยะ[ส]', 'สุกระ[ส]', 'พุฒ[ส]', 'จันเทา[ส]', 'เสารี.[ส]', 'เสาโร[ส]', 'พุฒโฒ[ส]', 'ระวิ[ส]', 'ชีโว[ส]', 'สะสิ[ส]', 'สุกโกร[ส]', 'ภุมโม[ส]', 'เสาโร.[ส]', 'สุริยะ[อา]', 'สุกระ[อา]', 'พุฒ[อา]', 'จันเทา[อา]', 'เสารี[อา]', 'ครู[อา]', 'ภุมมะ[อา]', 'สุริยะ.[อา]', 'ระวิ[อา]', 'ชีโว[อา]', 'สะสิ[อา]', 'สุกโกร[อา]', 'ภุมโม[อา]', 'เสาโร[อา]', 'พุฒโฒ[อา]', 'ระวิ.[อา]', 'จันเทา[จ]', 'เสารี[จ]', 'ครู[จ]', 'ภุมมะ[จ]', 'สุริยะ[จ]', 'สุกระ[จ]', 'พุฒ[จ]', 'จันเทา.[จ]', 'สะสิ[จ]', 'สุกโกร[จ]', 'ภุมโม[จ]', 'เสาโร[จ]', 'พุฒโฒ[จ]', 'ระวิ[จ]', 'ชีโว[จ]', 'สะสิ.[จ]']
+    resultm = Math.abs(minus.indexOf(threeEyes) - minus.indexOf(threeEyesLost))
+    document.getElementById('resulte').innerHTML = ' • ผลลัพธ์: <font color=\'red\'><b>' + resultm + ' ตำแหน่ง</b></font>'
+    jumpUp = MoonPredict[Number(resultm % 3)-1]
+
+} else if (getDaylost === 'วัน พุฒ'){
+    wednesdaylost()
+    document.getElementById('lostEye').innerHTML=threeEyesLost
+    minus = ['พุฒ[พ]', 'จันเทา[พ]', 'เสารี[พ]', 'ครู[พ]', 'ภุมมะ[พ]','ภุมมะ[พ]', 'สุริยะ[พ]', 'สุกระ[พ]', 'พุฒ.[พ]', 'พุฒโฒ[พ]', 'ระวิ[พ]', 'ชีโว[พ]', 'สะสิ[พ]', 'สุกโกร[พ]', 'ภุมโม[พ]', 'เสาโร[พ]', 'พุฒโฒ.[พ]', 'ครู[พฤ]', 'ภุมมะ[พฤ]', 'สุริยะ[พฤ]', 'สุกระ[พฤ]', 'พุฒ[พฤ]', 'จันเทา[พฤ]', 'เสารี[พฤ]', 'ครู.[พฤ]', 'ชีโว[พฤ]', 'สะสิ[พฤ]', 'สุกโกร[พฤ]', 'ภุมโม[พฤ]', 'เสาโร[พฤ]', 'พุฒโฒ[พฤ]', 'ระวิ[พฤ]', 'ชีโว.[พฤ]', 'สุกระ[ศ]', 'พุฒ[ศ]', 'จันเทา[ศ]', 'เสารี[ศ]', 'ครู[ศ]', 'ภุมมะ[ศ]', 'สุริยะ[ศ]', 'สุกระ.[ศ]', 'สุกโกร[ศ]', 'ภุมโม[ศ]', 'เสาโร[ศ]', 'พุฒโฒ[ศ]', 'ระวิ[ศ]', 'ชีโว[ศ]', 'สะสิ[ศ]', 'สุกโกร.[ศ]', 'เสารี[ส]', 'ครู[ส]', 'ภุมมะ[ส]', 'สุริยะ[ส]', 'สุกระ[ส]', 'พุฒ[ส]', 'จันเทา[ส]', 'เสารี.[ส]', 'เสาโร[ส]', 'พุฒโฒ[ส]', 'ระวิ[ส]', 'ชีโว[ส]', 'สะสิ[ส]', 'สุกโกร[ส]', 'ภุมโม[ส]', 'เสาโร.[ส]', 'สุริยะ[อา]', 'สุกระ[อา]', 'พุฒ[อา]', 'จันเทา[อา]', 'เสารี[อา]', 'ครู[อา]', 'ภุมมะ[อา]', 'สุริยะ.[อา]', 'ระวิ[อา]', 'ชีโว[อา]', 'สะสิ[อา]', 'สุกโกร[อา]', 'ภุมโม[อา]', 'เสาโร[อา]', 'พุฒโฒ[อา]', 'ระวิ.[อา]', 'จันเทา[จ]', 'เสารี[จ]', 'ครู[จ]', 'ภุมมะ[จ]', 'สุริยะ[จ]', 'สุกระ[จ]', 'พุฒ[จ]', 'จันเทา.[จ]', 'สะสิ[จ]', 'สุกโกร[จ]', 'ภุมโม[จ]', 'เสาโร[จ]', 'พุฒโฒ[จ]', 'ระวิ[จ]', 'ชีโว[จ]', 'สะสิ.[จ]', 'ภุมมะ[อ]', 'สุริยะ[อ]', 'สุกระ[อ]', 'พุฒ[อ]', 'จันเทา[อ]', 'เสารี[อ]', 'ครู[อ]', 'ภุมมะ.[อ]', 'ภุมโม[อ]', 'เสาโร[อ]', 'พุฒโฒ[อ]', 'ระวิ[อ]', 'ชีโว[อ]', 'สะสิ[อ]', 'สุกโกร[อ]', 'ภุมโม.[อ]']
+    resultm = Math.abs(minus.indexOf(threeEyes) - minus.indexOf(threeEyesLost))
+    document.getElementById('resulte').innerHTML = ' • ผลลัพธ์: <font color=\'red\'><b>' + resultm + ' ตำแหน่ง</b></font>'
+    jumpUp = MoonPredict[Number(resultm % 3)-1]
+
+} else if (getDaylost === 'วัน พฤหัศบดิ์'){
+    thursdaylost()
+    document.getElementById('lostEye').innerHTML=threeEyesLost
+    minus = ['ครู[พฤ]', 'ภุมมะ[พฤ]', 'สุริยะ[พฤ]', 'สุกระ[พฤ]', 'พุฒ[พฤ]', 'จันเทา[พฤ]', 'เสารี[พฤ]', 'ครู.[พฤ]', 'ชีโว[พฤ]', 'สะสิ[พฤ]', 'สุกโกร[พฤ]', 'ภุมโม[พฤ]', 'เสาโร[พฤ]', 'พุฒโฒ[พฤ]', 'ระวิ[พฤ]', 'ชีโว.[พฤ]', 'สุกระ[ศ]', 'พุฒ[ศ]', 'จันเทา[ศ]', 'เสารี[ศ]', 'ครู[ศ]', 'ภุมมะ[ศ]', 'สุริยะ[ศ]', 'สุกระ.[ศ]', 'สุกโกร[ศ]', 'ภุมโม[ศ]', 'เสาโร[ศ]', 'พุฒโฒ[ศ]', 'ระวิ[ศ]', 'ชีโว[ศ]', 'สะสิ[ศ]', 'สุกโกร.[ศ]', 'เสารี[ส]', 'ครู[ส]', 'ภุมมะ[ส]', 'สุริยะ[ส]', 'สุกระ[ส]', 'พุฒ[ส]', 'จันเทา[ส]', 'เสารี.[ส]', 'เสาโร[ส]', 'พุฒโฒ[ส]', 'ระวิ[ส]', 'ชีโว[ส]', 'สะสิ[ส]', 'สุกโกร[ส]', 'ภุมโม[ส]', 'เสาโร.[ส]', 'สุริยะ[อา]', 'สุกระ[อา]', 'พุฒ[อา]', 'จันเทา[อา]', 'เสารี[อา]', 'ครู[อา]', 'ภุมมะ[อา]', 'สุริยะ.[อา]', 'ระวิ[อา]', 'ชีโว[อา]', 'สะสิ[อา]', 'สุกโกร[อา]', 'ภุมโม[อา]', 'เสาโร[อา]', 'พุฒโฒ[อา]', 'ระวิ.[อา]', 'จันเทา[จ]', 'เสารี[จ]', 'ครู[จ]', 'ภุมมะ[จ]', 'สุริยะ[จ]', 'สุกระ[จ]', 'พุฒ[จ]', 'จันเทา.[จ]', 'สะสิ[จ]', 'สุกโกร[จ]', 'ภุมโม[จ]', 'เสาโร[จ]', 'พุฒโฒ[จ]', 'ระวิ[จ]', 'ชีโว[จ]', 'สะสิ.[จ]', 'ภุมมะ[อ]', 'สุริยะ[อ]', 'สุกระ[อ]', 'พุฒ[อ]', 'จันเทา[อ]', 'เสารี[อ]', 'ครู[อ]', 'ภุมมะ.[อ]', 'ภุมโม[อ]', 'เสาโร[อ]', 'พุฒโฒ[อ]', 'ระวิ[อ]', 'ชีโว[อ]', 'สะสิ[อ]', 'สุกโกร[อ]', 'ภุมโม.[อ]', 'พุฒ[พ]', 'จันเทา[พ]', 'เสารี[พ]', 'ครู[พ]', 'ภุมมะ[พ]','ภุมมะ[พ]', 'สุริยะ[พ]', 'สุกระ[พ]', 'พุฒ.[พ]', 'พุฒโฒ[พ]', 'ระวิ[พ]', 'ชีโว[พ]', 'สะสิ[พ]', 'สุกโกร[พ]', 'ภุมโม[พ]', 'เสาโร[พ]', 'พุฒโฒ.[พ]']
+    resultm = Math.abs(minus.indexOf(threeEyes) - minus.indexOf(threeEyesLost))
+    document.getElementById('resulte').innerHTML = ' • ผลลัพธ์: <font color=\'red\'><b>' + resultm + ' ตำแหน่ง</b></font>'
+    jumpUp = MoonPredict[Number(resultm % 3)-1]
+
+} else if (getDaylost === 'วัน สุกร์'){
+    fridaylost()
+    document.getElementById('lostEye').innerHTML=threeEyesLost
+    minus = ['สุกระ[ศ]', 'พุฒ[ศ]', 'จันเทา[ศ]', 'เสารี[ศ]', 'ครู[ศ]', 'ภุมมะ[ศ]', 'สุริยะ[ศ]', 'สุกระ.[ศ]', 'สุกโกร[ศ]', 'ภุมโม[ศ]', 'เสาโร[ศ]', 'พุฒโฒ[ศ]', 'ระวิ[ศ]', 'ชีโว[ศ]', 'สะสิ[ศ]', 'สุกโกร.[ศ]', 'เสารี[ส]', 'ครู[ส]', 'ภุมมะ[ส]', 'สุริยะ[ส]', 'สุกระ[ส]', 'พุฒ[ส]', 'จันเทา[ส]', 'เสารี.[ส]', 'เสาโร[ส]', 'พุฒโฒ[ส]', 'ระวิ[ส]', 'ชีโว[ส]', 'สะสิ[ส]', 'สุกโกร[ส]', 'ภุมโม[ส]', 'เสาโร.[ส]', 'สุริยะ[อา]', 'สุกระ[อา]', 'พุฒ[อา]', 'จันเทา[อา]', 'เสารี[อา]', 'ครู[อา]', 'ภุมมะ[อา]', 'สุริยะ.[อา]', 'ระวิ[อา]', 'ชีโว[อา]', 'สะสิ[อา]', 'สุกโกร[อา]', 'ภุมโม[อา]', 'เสาโร[อา]', 'พุฒโฒ[อา]', 'ระวิ.[อา]', 'จันเทา[จ]', 'เสารี[จ]', 'ครู[จ]', 'ภุมมะ[จ]', 'สุริยะ[จ]', 'สุกระ[จ]', 'พุฒ[จ]', 'จันเทา.[จ]', 'สะสิ[จ]', 'สุกโกร[จ]', 'ภุมโม[จ]', 'เสาโร[จ]', 'พุฒโฒ[จ]', 'ระวิ[จ]', 'ชีโว[จ]', 'สะสิ.[จ]', 'ภุมมะ[อ]', 'สุริยะ[อ]', 'สุกระ[อ]', 'พุฒ[อ]', 'จันเทา[อ]', 'เสารี[อ]', 'ครู[อ]', 'ภุมมะ.[อ]', 'ภุมโม[อ]', 'เสาโร[อ]', 'พุฒโฒ[อ]', 'ระวิ[อ]', 'ชีโว[อ]', 'สะสิ[อ]', 'สุกโกร[อ]', 'ภุมโม.[อ]', 'พุฒ[พ]', 'จันเทา[พ]', 'เสารี[พ]', 'ครู[พ]', 'ภุมมะ[พ]','ภุมมะ[พ]', 'สุริยะ[พ]', 'สุกระ[พ]', 'พุฒ.[พ]', 'พุฒโฒ[พ]', 'ระวิ[พ]', 'ชีโว[พ]', 'สะสิ[พ]', 'สุกโกร[พ]', 'ภุมโม[พ]', 'เสาโร[พ]', 'พุฒโฒ.[พ]', 'ครู[พฤ]', 'ภุมมะ[พฤ]', 'สุริยะ[พฤ]', 'สุกระ[พฤ]', 'พุฒ[พฤ]', 'จันเทา[พฤ]', 'เสารี[พฤ]', 'ครู.[พฤ]', 'ชีโว[พฤ]', 'สะสิ[พฤ]', 'สุกโกร[พฤ]', 'ภุมโม[พฤ]', 'เสาโร[พฤ]', 'พุฒโฒ[พฤ]', 'ระวิ[พฤ]', 'ชีโว.[พฤ]']
+    resultm = Math.abs(minus.indexOf(threeEyes) - minus.indexOf(threeEyesLost))
+    document.getElementById('resulte').innerHTML = ' • ผลลัพธ์: <font color=\'red\'><b>' + resultm + ' ตำแหน่ง</b></font>'
+    jumpUp = MoonPredict[Number(resultm % 3)-1]
+
+} else if (getDaylost === 'วัน เสาร์'){
+    saturdaylost()
+    document.getElementById('lostEye').innerHTML=threeEyesLost
+    minus = ['เสารี[ส]', 'ครู[ส]', 'ภุมมะ[ส]', 'สุริยะ[ส]', 'สุกระ[ส]', 'พุฒ[ส]', 'จันเทา[ส]', 'เสารี.[ส]', 'เสาโร[ส]', 'พุฒโฒ[ส]', 'ระวิ[ส]', 'ชีโว[ส]', 'สะสิ[ส]', 'สุกโกร[ส]', 'ภุมโม[ส]', 'เสาโร.[ส]', 'สุริยะ[อา]', 'สุกระ[อา]', 'พุฒ[อา]', 'จันเทา[อา]', 'เสารี[อา]', 'ครู[อา]', 'ภุมมะ[อา]', 'สุริยะ.[อา]', 'ระวิ[อา]', 'ชีโว[อา]', 'สะสิ[อา]', 'สุกโกร[อา]', 'ภุมโม[อา]', 'เสาโร[อา]', 'พุฒโฒ[อา]', 'ระวิ.[อา]', 'จันเทา[จ]', 'เสารี[จ]', 'ครู[จ]', 'ภุมมะ[จ]', 'สุริยะ[จ]', 'สุกระ[จ]', 'พุฒ[จ]', 'จันเทา.[จ]', 'สะสิ[จ]', 'สุกโกร[จ]', 'ภุมโม[จ]', 'เสาโร[จ]', 'พุฒโฒ[จ]', 'ระวิ[จ]', 'ชีโว[จ]', 'สะสิ.[จ]', 'ภุมมะ[อ]', 'สุริยะ[อ]', 'สุกระ[อ]', 'พุฒ[อ]', 'จันเทา[อ]', 'เสารี[อ]', 'ครู[อ]', 'ภุมมะ.[อ]', 'ภุมโม[อ]', 'เสาโร[อ]', 'พุฒโฒ[อ]', 'ระวิ[อ]', 'ชีโว[อ]', 'สะสิ[อ]', 'สุกโกร[อ]', 'ภุมโม.[อ]', 'พุฒ[พ]', 'จันเทา[พ]', 'เสารี[พ]', 'ครู[พ]', 'ภุมมะ[พ]','ภุมมะ[พ]', 'สุริยะ[พ]', 'สุกระ[พ]', 'พุฒ.[พ]', 'พุฒโฒ[พ]', 'ระวิ[พ]', 'ชีโว[พ]', 'สะสิ[พ]', 'สุกโกร[พ]', 'ภุมโม[พ]', 'เสาโร[พ]', 'พุฒโฒ.[พ]', 'ครู[พฤ]', 'ภุมมะ[พฤ]', 'สุริยะ[พฤ]', 'สุกระ[พฤ]', 'พุฒ[พฤ]', 'จันเทา[พฤ]', 'เสารี[พฤ]', 'ครู.[พฤ]', 'ชีโว[พฤ]', 'สะสิ[พฤ]', 'สุกโกร[พฤ]', 'ภุมโม[พฤ]', 'เสาโร[พฤ]', 'พุฒโฒ[พฤ]', 'ระวิ[พฤ]', 'ชีโว.[พฤ]', 'สุกระ[ศ]', 'พุฒ[ศ]', 'จันเทา[ศ]', 'เสารี[ศ]', 'ครู[ศ]', 'ภุมมะ[ศ]', 'สุริยะ[ศ]', 'สุกระ.[ศ]', 'สุกโกร[ศ]', 'ภุมโม[ศ]', 'เสาโร[ศ]', 'พุฒโฒ[ศ]', 'ระวิ[ศ]', 'ชีโว[ศ]', 'สะสิ[ศ]', 'สุกโกร.[ศ]']
+    resultm = Math.abs(minus.indexOf(threeEyes) - minus.indexOf(threeEyesLost))
+    document.getElementById('resulte').innerHTML = ' • ผลลัพธ์: <font color=\'red\'><b>' + resultm + ' ตำแหน่ง</b></font>'
+    jumpUp = MoonPredict[Number(resultm % 3)-1]
+}
+
+document.getElementById('eyeone').style.color = 'black'
+document.getElementById('eyetwo').style.color = 'black'
+document.getElementById('eyethree').style.color = 'black'
+console.log(resultm)
+console.log(jumpUp)
+
+if (document.querySelectorAll('.lunarNow')[0].innerHTML == 'ข้างขึ้น' && jumpUp === 0){
+    jumpUp = 3
+    document.getElementById('eyethree').style.color = 'red'
+} else if (document.querySelectorAll('.lunarNow')[0].innerHTML == 'ข้างขึ้น' && jumpUp === 0){
+    jumpUp = 1
+    document.getElementById('eyeone').style.color = 'red'
+}
+
+if (getQuestion === '0' && jumpUp === 1){
+    document.getElementById('text1').innerHTML = 'จะ มิ ได้ สิ่ง นั้น คืน'
+    document.getElementById('eyeone').style.color = 'red'
+} else if (getQuestion === '0' && jumpUp === 2){
+    document.getElementById('text1').innerHTML = 'จะ ได้ ด้วย ยาก'
+    document.getElementById('eyetwo').style.color = 'red'
+} else if (getQuestion === '0' && jumpUp === 3){
+    document.getElementById('text1').innerHTML = 'จะ ได้ พลัน'
+    document.getElementById('eyethree').style.color = 'red'
+}
+if (getQuestion === '1' && jumpUp === 1){
+    document.getElementById('text1').innerHTML = 'ชายบัณฑิตย์ อยู่ ใน เรือน ก็ ว่า ได้ เอา ไป ไว้ แทบ ฝั่ง น้ำ'
+    document.getElementById('eyeone').style.color = 'red'
+} else if (getQuestion === '1' && jumpUp === 2){
+    document.getElementById('text1').innerHTML = 'หญิง ลัก เอา ไป ไว้ หน ประตู มี กอ ไม้ ริม ประตู บ้าน ถ้า มิ ฉนั้น ที่ บ่อ น้ำ แทบโคน ไม้ ใหญ่ เอา ของ หนัก ทับ ไว้'
+    document.getElementById('eyetwo').style.color = 'red'
+} else if (getQuestion === '1' && jumpUp === 3){
+    document.getElementById('text1').innerHTML = 'ผู้ ใหญ่ ดำ ลัก เอา ไป ไว้ แทบ ต้น ไม้ ใหญ่ เอา ของ หนัก ทับ ไว้'
+    document.getElementById('eyethree').style.color = 'red'
+}
+if (getQuestion === '2' && jumpUp === 1){
+    document.getElementById('text1').innerHTML = 'ดำแดง อยู่ เรือน เดียว กัน ลัก เอา ไป'
+    document.getElementById('eyeone').style.color = 'red'
+} else if (getQuestion === '2' && jumpUp === 2){
+    document.getElementById('text1').innerHTML = 'หญิง ขาว อยู่ ใน เรือน ลัก เอา ไป ถ้า มิฉนั้น บัณฑิตย์ เอา ไว้'
+    document.getElementById('eyetwo').style.color = 'red'
+} else if (getQuestion === '2' && jumpUp === 3){
+    document.getElementById('text1').innerHTML = 'คน ดำ นอก เรือน ลัก เอา ไป'
+    document.getElementById('eyethree').style.color = 'red'
+}
+if (getQuestion === '3' && jumpUp === 1){
+    document.getElementById('text1').innerHTML = 'จะ ได้ พลัน'
+    document.getElementById('eyeone').style.color = 'red'
+} else if (getQuestion === '3' && jumpUp === 2){
+    document.getElementById('text1').innerHTML = 'จะ ได้ ไม่ ได้ เท่า กัน มี ผู้จะ มา บอก ข่าว เสทือน ได้ ตัว'
+    document.getElementById('eyetwo').style.color = 'red'
+} else if (getQuestion === '3' && jumpUp === 3){
+    document.getElementById('text1').innerHTML = 'มิ ได้ เลย'
+    document.getElementById('eyethree').style.color = 'red'
+}
+if (getQuestion === '4' && jumpUp === 1 ){
+    document.getElementById('text1').innerHTML = 'ให้ หา หน อิสาร แล อุดร เขา เอา ไป ไว้ จะ ได้ ด้วย ยาก มี ผู้ จะ มา บอก ข่าว มิ ฉนั้น อยู่ ที่ ต้น ไม้ ใหญ่'
+    document.getElementById('eyeone').style.color = 'red'
+} else if (getQuestion === '4' && jumpUp === 2){
+    document.getElementById('text1').innerHTML = 'ให้ หา หน หรดี แล ทักษิณ ว่า พี่ น้อง เอา ไว้ ก็ ว่า ได้'
+    document.getElementById('eyetwo').style.color = 'red'
+} else if (getQuestion === '4' && jumpUp === 3){
+    document.getElementById('text1').innerHTML = 'แขก มา หา ลัก เอา เอา ไว้ ของ นั้น อยู่ หน ประจิม เพื่อน บ้าน จะ นำ เอา มา ให้ มิ ใกล้ มิ ไกร กัน เลย'
+    document.getElementById('eyethree').style.color = 'red'
+}
+if (getQuestion === '5' && jumpUp === 1 ){
+    document.getElementById('text1').innerHTML = 'ง่าย'
+    document.getElementById('eyeone').style.color = 'red'
+} else if (getQuestion === '5' && jumpUp === 2){
+    document.getElementById('text1').innerHTML = 'นาน ออก'
+    document.getElementById('eyetwo').style.color = 'red'
+} else if (getQuestion === '5' && jumpUp === 3){
+    document.getElementById('text1').innerHTML = 'ลำบาก นัก แล'
+    document.getElementById('eyethree').style.color = 'red'
+}
+if (getQuestion === '6' && jumpUp === 1 ){
+    document.getElementById('text1').innerHTML = 'รุ่ง ขึ้น งาย แล้ว จึง ออก'
+    document.getElementById('eyeone').style.color = 'red'
+} else if (getQuestion === '6' && jumpUp === 2){
+    document.getElementById('text1').innerHTML = 'ถึง เที่ยง หรือ เย็น จะ ออก'
+    document.getElementById('eyetwo').style.color = 'red'
+} else if (getQuestion === '6' && jumpUp === 3){
+    document.getElementById('text1').innerHTML = 'กลาง คืน จึง ออก'
+    document.getElementById('eyethree').style.color = 'red'
+}
+if (getQuestion === '7' && jumpUp === 1 ){
+    document.getElementById('text1').innerHTML = 'ผู้ ชาย'
+    document.getElementById('eyeone').style.color = 'red'
+} else if (getQuestion === '7' && jumpUp === 2){
+    document.getElementById('text1').innerHTML = 'ผู้ หญิง'
+    document.getElementById('eyetwo').style.color = 'red'
+} else if (getQuestion === '7' && jumpUp === 3){
+    document.getElementById('text1').innerHTML = 'ผู้ ชาย แล'
+    document.getElementById('eyethree').style.color = 'red'
+}
+if (getQuestion === '8' && jumpUp === 1 ){
+    document.getElementById('text1').innerHTML = 'ของ นั้น อยู่ จะ ได้ แต่ วัน นั้น ถ้า มิ ได้ ใน วัน นั้น ของ นั้น จะสูญ'
+    document.getElementById('eyeone').style.color = 'red'
+} else if (getQuestion === '8' && jumpUp === 2){
+    document.getElementById('text1').innerHTML = 'ของ มิ ออก จาก ที่ ของ นั้น ไม่ สูญ จะ ได้ แต่ ใน ๒ วัน ๓ วัน มี ผู้ หญิง ดำแดง จะ บอก ข่าว เสมือน หนึ่ง ได้'
+    document.getElementById('eyetwo').style.color = 'red'
+} else if (getQuestion === '8' && jumpUp === 3){
+    document.getElementById('text1').innerHTML = 'ออก จาก แปลง แล้ว ควาย นั้น คน จับ แล้ว'
+    document.getElementById('eyethree').style.color = 'red'
+}
+if (getQuestion === '9' && jumpUp === 1 ){
+    document.getElementById('text1').innerHTML = 'จะ มา ถึง วัน นี้'
+    document.getElementById('eyeone').style.color = 'red'
+} else if (getQuestion === '9' && jumpUp === 2){
+    document.getElementById('text1').innerHTML = 'ยัง กังวล อยู่ มิมา ถ้า มิฉะนั้น ก็ นอน ทาง ๒ วัน จึง จะ มา ถึง'
+    document.getElementById('eyetwo').style.color = 'red'
+} else if (getQuestion === '9' && jumpUp === 3){
+    document.getElementById('text1').innerHTML = 'อีก สาม วัน จึง จะ มา ถึง ถ้า มิ ฉะนั้น มา ถึง ใน วันนี้ แล'
+    document.getElementById('eyethree').style.color = 'red'
+}
+if (getQuestion === '10' && jumpUp === 1 ){
+    document.getElementById('text1').innerHTML = 'คลาย แล้ว มิ เปนไร'
+    document.getElementById('eyeone').style.color = 'red'
+} else if (getQuestion === '10' && jumpUp === 2){
+    document.getElementById('text1').innerHTML = 'คน นั้น ต้อง ลำ บาก ยัง อีก สอง วัน จึง จะ พ้น เคราะห์'
+    document.getElementById('eyetwo').style.color = 'red'
+} else if (getQuestion === '10' && jumpUp === 3){
+    document.getElementById('text1').innerHTML = 'คน นั้น อับ ทรัพย์ ๓ วัน พ้น นั้น เคราะห์ ดี จะ ตก ใจ ใน ๓ วัน แล'
+    document.getElementById('eyethree').style.color = 'red'
+}
+if (getQuestion === '11' && jumpUp === 1 ){
+    document.getElementById('text1').innerHTML = 'ยัง นาน จึง จะ ออก'
+    document.getElementById('eyeone').style.color = 'red'
+} else if (getQuestion === '11' && jumpUp === 2){
+    document.getElementById('text1').innerHTML = 'ออก ยาก นาน จึง จะ ออก'
+    document.getElementById('eyetwo').style.color = 'red'
+} else if (getQuestion === '11' && jumpUp === 3){
+    document.getElementById('text1').innerHTML = 'ออก ยาก นัก จะ ตก ใจ แล'
+    document.getElementById('eyethree').style.color = 'red'
+}
+
+console.log(jumpUp)
+}
+document.querySelector('.cal').addEventListener("click", ()=>cal())
+
+</script>
+</body>
+</html>
